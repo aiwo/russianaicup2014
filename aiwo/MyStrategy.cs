@@ -13,8 +13,8 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
         private static Game _game;
         private static Move _move;
 
-        private PID anglePID;
-        private PID speedPID;
+        private static PID anglePID;
+        private static PID speedPID;
 
         public void Move(Hockeyist self, World world, Game game, Move move)
         {
@@ -22,6 +22,15 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
             _self = self;
             _game = game;
             _move = move;
+
+            const double speedKp = 0.005;
+            speedPID = new PID(speedKp, 1.0D);
+
+            // TODO: Angle Max Output
+            /*
+            const double angleKp = 0.5;
+            anglePID = new PID(angleKp, 1.0D);
+             */
 
             InitStrikePoints();
 
@@ -83,8 +92,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
                 if (Math.Abs(angle) < StrikeAngle)
                 {
-                    const double Kp = 0.005;
-                    _move.SpeedUp = Math.Min(Kp * distance, 1.0D);
+                    _move.SpeedUp = speedPID.ValueForError(distance);
                 }
             }
         }
@@ -100,8 +108,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
         private static void GoGetThePuck()
         {
             double distance = _self.GetDistanceTo(_world.Puck);
-            const double Kp = 0.005;
-            _move.SpeedUp = Math.Min(Kp * distance, 1.0D);
+            _move.SpeedUp = speedPID.ValueForError(distance);
 
             _move.Turn = _self.GetAngleTo(_world.Puck);
 
