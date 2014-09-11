@@ -1,15 +1,20 @@
 using System;
+using System.Linq;
 using Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk.Model;
 
 namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
     
     public sealed class MyStrategy : IStrategy {
         private const double StrikeAngle = 1.0D*Math.PI/180.0D;
+        private const double StrikeDistanceDelta = 50.0D;
 
         private static World _world;
         private static Hockeyist _self;
         private static Game _game;
         private static Move _move;
+
+        private PID anglePID;
+        private PID speedPID;
 
         public void Move(Hockeyist self, World world, Game game, Move move)
         {
@@ -18,27 +23,104 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
             _game = game;
             _move = move;
 
+            InitStrikePoints();
+
             if (self.State == HockeyistState.Swinging) 
             {
                 move.Action = ActionType.Strike;
                 return;
             }
 
-            if (world.Puck.OwnerPlayerId == self.PlayerId)
+            if (IsHunter())
             {
-                DealWithPuck();
-            } 
-            else 
-            {
-                GoGetThePuck();
+                if (world.Puck.OwnerHockeyistId == self.Id)
+                {
+                    PassThePuck();
+                }
+                else
+                {
+                    GoGetThePuck();
+                }    
             }
+            else
+            {
+                TakeStrikePosition();
+            }
+        }
+
+        private static Point[] strikePoints;
+
+        private static void InitStrikePoints()
+        {
+            strikePoints = new Point[]
+            {
+                new Point(212, 580),
+                new Point(212, 346)
+            };
+        }
+
+        private static void TakeStrikePosition()
+        {
+            if (_world.Puck.OwnerHockeyistId == _self.Id)
+            {
+                PerformAttack();
+                return;
+            }
+
+            Point point = strikePoints[0];
+            double distance = Hypot(_self.X - point.X, _self.Y - point.Y);
+            
+            if (distance < StrikeDistanceDelta)
+            {
+                _move.Turn = _self.GetAngleTo(_world.Puck);
+                _move.Action = ActionType.TakePuck;
+            }
+            else
+            {
+                double angle = _self.GetAngleTo(point.X, point.Y);
+
+                _move.Turn = angle;
+
+                if (Math.Abs(angle) < StrikeAngle)
+                {
+                    const double Kp = 0.005;
+                    _move.SpeedUp = Math.Min(Kp * distance, 1.0D);
+                }
+            }
+        }
+
+        
+        private static bool IsHunter()
+        {
+            Hockeyist teammate =
+                _world.Hockeyists.First(x => x.IsTeammate && x.Type != HockeyistType.Goalie && x.Id != _self.Id);
+            return _self.X > teammate.X;
         }
 
         private static void GoGetThePuck()
         {
-            _move.SpeedUp = 1.0D;
+            double distance = _self.GetDistanceTo(_world.Puck);
+            const double Kp = 0.005;
+            _move.SpeedUp = Math.Min(Kp * distance, 1.0D);
+
             _move.Turn = _self.GetAngleTo(_world.Puck);
-            _move.Action = ActionType.TakePuck;
+
+            if (_world.Tick % 2 == 0)
+            {
+                Hockeyist nearestOpponent = NearestOpponent(_self.X, _self.Y, _world);
+                if (nearestOpponent != null)
+                {
+                    if (_self.GetDistanceTo(nearestOpponent) <= _game.StickLength 
+                        && Math.Abs(_self.GetAngleTo(nearestOpponent)) < 0.5D * _game.StickSector)
+                    {
+                        _move.Action = ActionType.Strike;
+                    }
+                }
+            }
+            else
+            {
+                _move.Action = ActionType.TakePuck;
+            }
         }
 
         private static double GetInterceptAngleToUnit(Unit unit)
@@ -49,8 +131,18 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
             return _self.GetAngleTo(-x, y);
         }
 
-        private static void DealWithPuck()
+        private static void PassThePuck()
         {
+            Hockeyist striker = _world.Hockeyists.First(x => x.IsTeammate && x.Type != HockeyistType.Goalie && x.Id != _self.Id);
+
+            double angle = _self.GetAngleTo(striker);
+            _move.Turn = angle;
+
+            if (Math.Abs(angle) < StrikeAngle)
+            {
+                _move.Action = ActionType.Strike;
+            }
+            /*
             if (_world.Puck.OwnerHockeyistId == _self.Id)
             {
                 PerformAttack();
@@ -59,6 +151,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
             {
                 PerformSupport();
             }
+             */
         }
 
         private static void PerformAttack()
