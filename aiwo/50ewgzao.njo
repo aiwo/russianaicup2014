@@ -14,8 +14,6 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
         private double _x;
         private double _y;
 
-        public bool Passed = false;
-
         public double X {
             get { return _x; }
         }
@@ -30,7 +28,6 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
             _x = Math.Min(x, MaxX);
             _y = Math.Min(y, MaxY);
         }
-
     }
 
     class Movement
@@ -41,21 +38,12 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 
     public class PID
     {
-        public double Kp { get; private set; }
-        public double MaxOutput { get; private set; }
-
-        public PID(double aKp, double maxOutput)
-        {
-            Kp = aKp;
-            MaxOutput = maxOutput;
-        }
 
         public double ValueForError(double error)
         {
-            return Math.Min(Kp * error, MaxOutput);
+            return Kp * error;
         }
 
-        /*
         private long lastTime;
         private float iTerm;
         private float lastInput;
@@ -64,7 +52,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
         public float Output { get; set; }
         public float Setpoint { get; set; }
 
-        
+        public float Kp { get; private set; }
         public float Ki { get; private set; }
         public float Kd { get; private set; }
 
@@ -161,6 +149,5 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 
             Initialize();
         }
-         */
     }
 }
