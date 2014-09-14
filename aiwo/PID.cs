@@ -6,33 +6,7 @@ using Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk.Model;
 
 namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 {
-    class Point
-    {
-        private const double MaxX = 1024;
-        private const double MaxY = 768;
-
-        private double _x;
-        private double _y;
-
-        public bool Passed = false;
-
-        public double X {
-            get { return _x; }
-        }
-
-        public double Y
-        {
-            get { return _y; }
-        }
-
-        public Point(double x, double y)
-        {
-            _x = Math.Min(x, MaxX);
-            _y = Math.Min(y, MaxY);
-        }
-
-    }
-
+    
     class Movement
     {
         public double Speed;

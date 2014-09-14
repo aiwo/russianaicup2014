@@ -3,11 +3,39 @@ using System.Linq;
 using Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk.Model;
 
 namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
-    
+
+    class Point
+    {
+        private const double MaxX = 1200;
+        private const double MaxY = 800;
+
+        private double _x;
+        private double _y;
+
+        public bool Passed = false;
+
+        public double X
+        {
+            get { return _x; }
+        }
+
+        public double Y
+        {
+            get { return _y; }
+        }
+
+        public Point(double x, double y)
+        {
+            _x = Math.Min(x, MaxX);
+            _y = Math.Min(y, MaxY);
+        }
+
+    }
+
     public sealed class MyStrategy : IStrategy {
-        private const double StrikeAngle = 2.0D * Math.PI/180.0D;
+        private const double StrikeAngle = 1.0D * Math.PI/180.0D;
         private const double StrikeDistanceDelta = 50.0D;
-        private const double DistanceDelta = 50.0D;
+        private const double DistanceDelta = 80.0D;
 
         private static World _world;
         private static Hockeyist _self;
@@ -43,8 +71,8 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
             strikePoints = new Point[]
             {
-                new Point(400, 500),
-                new Point(400, 250)
+                new Point(450, 650),
+                new Point(450, 250)
             };
 
             attackPath = new Point[]
@@ -53,10 +81,10 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
                 new Point(400, 250), 
             };
 
-            defenseLine = 910;
+            defenseLine = _world.GetMyPlayer().NetLeft - 30;
             attackLine = 400;
             decelerateLine = 550;
-            minStrikeLine = 250;
+            minStrikeLine = 200;
 
             if (IsHunter())
             {
@@ -108,7 +136,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
             
             if (Math.Abs(angleToNet) < StrikeAngle)
             {
-                _move.Action = ActionType.Swing;
+                _move.Action = ActionType.Strike;
             }
         }
 
@@ -126,7 +154,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
             double angle = _self.GetAngleTo(x, y);
 
-            Console.WriteLine(angleToPuck - angle);
+            //Console.WriteLine(angleToPuck - angle);
 
             _move.Turn = angle;
             _move.SpeedUp = 1.0D;
@@ -151,12 +179,24 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
         private static bool StrikePositionTaken()
         {
             var point = CurrentStrikePosition();
-            return _self.GetDistanceTo(point.X, point.Y) < DistanceDelta;
+            if (!point.Passed)
+            {
+                point.Passed = _self.GetDistanceTo(point.X, point.Y) < DistanceDelta;
+                Console.WriteLine("SET PASSED TRUE");
+            }
+            return point.Passed;
         }
 
         private static void TakeStrikePosition()
         {
             var point = CurrentStrikePosition();
+            if (point.Passed)
+            {
+                Console.WriteLine("WTF");
+            }
+
+            point.Passed = false;
+            Console.WriteLine("SET PASSED FALSE");
             double distance = _self.GetDistanceTo(point.X, point.Y);
 
             double angle = _self.GetAngleTo(point.X, point.Y);
@@ -172,14 +212,22 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
             if (hockeists.Sum(x => x.X) / hockeists.Length > _self.X)
             {
-                double closestPoint = strikePoints.Min(x => _self.GetDistanceTo(x.X, x.Y));
-                return strikePoints.First(x => _self.GetDistanceTo(x.X, x.Y) <= closestPoint);
+                return PickClosestStrikePoint();
             }
 
             double enemyPosition = hockeists.Sum(x => x.Y) / hockeists.Length;
-            double safestPoint = strikePoints.Max(x => Math.Abs(x.Y - enemyPosition));
+            double maxDistance = strikePoints.Select(strikePoint => Math.Abs(strikePoint.Y - enemyPosition)).Concat(new double[] {0}).Max();
 
-            return strikePoints.First(x => Math.Abs(safestPoint - enemyPosition) <= x.Y);    
+
+            var point = strikePoints.First(strikePoint => Math.Abs(Math.Abs(strikePoint.Y - enemyPosition) - maxDistance) < 1);
+
+            return point;
+        }
+
+        private static Point PickClosestStrikePoint()
+        {
+            double closestPoint = strikePoints.Min(x => _self.GetDistanceTo(x.X, x.Y));
+            return strikePoints.First(x => _self.GetDistanceTo(x.X, x.Y) <= closestPoint);
         }
 
         private static bool TooClose()
@@ -187,7 +235,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
             return _self.X < minStrikeLine;
         }
 
-        private static bool DecelarateLineHit()
+        private static bool DecelerateLineHit()
         {
             return _self.X < decelerateLine;
         }
@@ -261,17 +309,21 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
             Hockeyist goalie =
                 _world.Hockeyists.FirstOrDefault(
-                x => x.Type == HockeyistType.Goalie && x.PlayerId == player.Id);
+                x => x.PlayerId == player.Id && x.Type == HockeyistType.Goalie);
 
-            double netX = 0.5D * (player.NetBack + player.NetFront);
+            double netX = player.NetFront;//0.5D * (player.NetBack + player.NetFront);
             double netY = 0.5D * (player.NetBottom + player.NetTop);
 
-            if (goalie != null)
+            double puckSize = _world.Puck.Radius;
+
+            if (goalie == null)
             {
-                netY += (goalie.Y < netY ? 0.5D : -0.5D) * _game.GoalNetHeight;
+                return new Point(netX, netY);
             }
 
-            return new Point(netX, netY);
+            double strikeY = goalie.Y < netY ? player.NetBottom - puckSize : player.NetTop + puckSize;
+
+            return new Point(netX, strikeY);
         }
 
         private static bool IsHunter()
