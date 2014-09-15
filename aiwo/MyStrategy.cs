@@ -216,7 +216,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
         private static Point CurrentStrikePosition()
         {
-            if (Math.Abs(_self.X - _world.GetOpponentPlayer().NetFront) < strikeDistanceFromNet + 100)
+            if (Math.Abs(_self.X - _world.GetOpponentPlayer().NetFront) < strikeDistanceFromNet + 100 && currentStrikePosition != null)
             {
                 Console.WriteLine("SELF X {0} NET FRONT {1}", _self.X, _world.GetOpponentPlayer().NetFront);
                 return currentStrikePosition;
