@@ -50,8 +50,11 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
         private static double defenseLine;
         private static double attackLine;
+        private static double strikeDistanceFromNet;
         private static double decelerateLine;
         private static double minStrikeLine;
+
+        private static Point currentStrikePosition;
 
         public void Move(Hockeyist self, World world, Game game, Move move)
         {
@@ -69,10 +72,15 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
             anglePID = new PID(angleKp, 1.0D);
              */
 
-            strikePoints = new Point[]
+            strikeDistanceFromNet = 385;
+            var opponentNetFront = _world.GetOpponentPlayer().NetFront;
+            attackLine = opponentNetFront + strikeDistanceFromNet < 0
+                ? opponentNetFront - strikeDistanceFromNet
+                : opponentNetFront + strikeDistanceFromNet;
+            strikePoints = new[]
             {
-                new Point(450, 650),
-                new Point(450, 250)
+                new Point(attackLine, 650),
+                new Point(attackLine, 250)
             };
 
             attackPath = new Point[]
@@ -182,7 +190,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
             if (!point.Passed)
             {
                 point.Passed = _self.GetDistanceTo(point.X, point.Y) < DistanceDelta;
-                Console.WriteLine("SET PASSED TRUE");
+                //Console.WriteLine("SET PASSED TRUE");
             }
             return point.Passed;
         }
@@ -196,7 +204,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
             }
 
             point.Passed = false;
-            Console.WriteLine("SET PASSED FALSE");
+            //Console.WriteLine("SET PASSED FALSE");
             double distance = _self.GetDistanceTo(point.X, point.Y);
 
             double angle = _self.GetAngleTo(point.X, point.Y);
@@ -208,6 +216,12 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
         private static Point CurrentStrikePosition()
         {
+            if (Math.Abs(_self.X - _world.GetOpponentPlayer().NetFront) < strikeDistanceFromNet + 100)
+            {
+                Console.WriteLine("SELF X {0} NET FRONT {1}", _self.X, _world.GetOpponentPlayer().NetFront);
+                return currentStrikePosition;
+            }
+
             Hockeyist[] hockeists = _world.Hockeyists.Where(x => !x.IsTeammate && x.Type != HockeyistType.Goalie).ToArray();
 
             if (hockeists.Sum(x => x.X) / hockeists.Length > _self.X)
@@ -221,7 +235,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
             var point = strikePoints.First(strikePoint => Math.Abs(Math.Abs(strikePoint.Y - enemyPosition) - maxDistance) < 1);
 
-            return point;
+            return currentStrikePosition = point;
         }
 
         private static Point PickClosestStrikePoint()
@@ -314,7 +328,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
             double netX = player.NetFront;//0.5D * (player.NetBack + player.NetFront);
             double netY = 0.5D * (player.NetBottom + player.NetTop);
 
-            double puckSize = _world.Puck.Radius;
+            double puckSize = _world.Puck.Radius + 5;
 
             if (goalie == null)
             {
