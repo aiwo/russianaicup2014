@@ -74,9 +74,9 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
             strikeDistanceFromNet = 385;
             var opponentNetFront = _world.GetOpponentPlayer().NetFront;
-            attackLine = opponentNetFront + strikeDistanceFromNet < 0
-                ? opponentNetFront - strikeDistanceFromNet
-                : opponentNetFront + strikeDistanceFromNet;
+            attackLine = opponentNetFront - strikeDistanceFromNet < 0
+                ? opponentNetFront + strikeDistanceFromNet
+                : opponentNetFront - strikeDistanceFromNet;
             strikePoints = new[]
             {
                 new Point(attackLine, 650),
