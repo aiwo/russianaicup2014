@@ -46,7 +46,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 				return;
 			}
 
-            const double speedKp = 0.005;
+//            const double speedKp = 0.005;
 //            speedPID = new PID(speedKp, 1.0D);
 
             // TODO: Angle Max Output
@@ -86,16 +86,6 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
                  */
             }
         }
-
-
-#region Attack
-	
-
-        #endregion
-
-#region Utility
-
-#endregion
 
 //        private static double GetInterceptAngleToUnit(Unit unit)
 //        {
