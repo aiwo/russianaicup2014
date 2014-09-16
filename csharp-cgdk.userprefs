@@ -1,0 +1,14 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="MyStrategy.cs">
+    <Files>
+      <File FileName="IStrategy.cs" Line="7" Column="2" />
+      <File FileName="PID.cs" Line="28" Column="10" />
+      <File FileName="MyStrategy.cs" Line="137" Column="35" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

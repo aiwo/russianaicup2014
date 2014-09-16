@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9C830E12-33C9-429B-914E-BBDAA478D495}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -56,15 +56,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -86,6 +80,14 @@
     <Compile Include="Model\HockeyistType.cs" />
     <Compile Include="Model\Unit.cs" />
     <Compile Include="Model\World.cs" />
+    <Compile Include="CurrentExtensions.cs" />
+    <Compile Include="WorldExtensions.cs" />
+    <Compile Include="Behaviours\DefenseBehaviour.cs" />
+    <Compile Include="Behaviours\HockeyistBehaviour.cs" />
+    <Compile Include="Behaviours\HunterBehaviour.cs" />
+    <Compile Include="HockeyistExtensions.cs" />
+    <Compile Include="MathUtil.cs" />
+    <Compile Include="Point.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
@@ -117,4 +119,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="Behaviours\" />
+  </ItemGroup>
 </Project>
