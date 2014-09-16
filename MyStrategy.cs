@@ -6,21 +6,21 @@ using System.Collections.Generic;
 namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
     public sealed class MyStrategy : IStrategy {
-        private const double StrikeDistanceDelta = 50.0D;
-
-        private static World _world;
-        private static Hockeyist _self;
-        private static Game _game;
-        private static Move _move;
-
-        private static PID anglePID;
-        private static PID speedPID;
-
-        private static Point[] strikePoints;
-        private static Point[] attackPath;
-
-        private static double defenseLine;
-        private static double attackLine;
+//        private const double StrikeDistanceDelta = 50.0D;
+//
+//        private static World _world;
+//        private static Hockeyist _self;
+//        private static Game _game;
+//        private static Move _move;
+//
+//        private static PID anglePID;
+//        private static PID speedPID;
+//
+//        private static Point[] strikePoints;
+//        private static Point[] attackPath;
+//
+//        private static double defenseLine;
+//        private static double attackLine;
 
 		static Dictionary<long, IEnumerator<Action<Move>>> behaviours = new Dictionary<long, IEnumerator<Action<Move>>>();
 
@@ -46,13 +46,8 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 				return;
 			}
 
-			_world = world;
-			_game = game;
-            _self = self;
-            _move = move;
-
             const double speedKp = 0.005;
-            speedPID = new PID(speedKp, 1.0D);
+//            speedPID = new PID(speedKp, 1.0D);
 
             // TODO: Angle Max Output
             /*
@@ -66,11 +61,11 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 //                ? opponentNetFront + strikeDistanceFromNet
 //                : opponentNetFront - strikeDistanceFromNet;
 
-            attackPath = new Point[]
-            {
-                new Point(700, 250),
-                new Point(400, 250), 
-            };
+//            attackPath = new Point[]
+//            {
+//                new Point(700, 250),
+//                new Point(400, 250), 
+//            };
 				
             
 //            decelerateLine = 550;
@@ -102,13 +97,13 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 
 #endregion
 
-        private static double GetInterceptAngleToUnit(Unit unit)
-        {
-            double x = Math.Abs(_self.X - unit.X) * _self.SpeedX / (_self.SpeedX - unit.SpeedX);
-            double y = Math.Abs(_self.Y - unit.Y) * _self.SpeedY / (_self.SpeedY - unit.SpeedY);
-
-            return _self.GetAngleTo(-x, y);
-        }
+//        private static double GetInterceptAngleToUnit(Unit unit)
+//        {
+//            double x = Math.Abs(_self.X - unit.X) * _self.SpeedX / (_self.SpeedX - unit.SpeedX);
+//            double y = Math.Abs(_self.Y - unit.Y) * _self.SpeedY / (_self.SpeedY - unit.SpeedY);
+//
+//            return _self.GetAngleTo(-x, y);
+//        }
 
 //        private static void PassThePuck()
 //        {
@@ -133,22 +128,22 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk {
 //             */
 //        }
 
-        private static void PerformSupport()
-        {
-			Hockeyist nearestOpponent = _self.NearestOpponent();
-            if (nearestOpponent != null)
-            {
-                if (_self.GetDistanceTo(nearestOpponent) > _game.StickLength)
-                {
-                    _move.SpeedUp = 1.0D;
-                }
-                else if (Math.Abs(_self.GetAngleTo(nearestOpponent)) < 0.5D * _game.StickSector)
-                {
-                    _move.Action = ActionType.Strike;
-                }
-                _move.Turn = _self.GetAngleTo(nearestOpponent);
-            }
-        }
+//        private static void PerformSupport()
+//        {
+//			Hockeyist nearestOpponent = _self.NearestOpponent();
+//            if (nearestOpponent != null)
+//            {
+//                if (_self.GetDistanceTo(nearestOpponent) > _game.StickLength)
+//                {
+//                    _move.SpeedUp = 1.0D;
+//                }
+//                else if (Math.Abs(_self.GetAngleTo(nearestOpponent)) < 0.5D * _game.StickSector)
+//                {
+//                    _move.Action = ActionType.Strike;
+//                }
+//                _move.Turn = _self.GetAngleTo(nearestOpponent);
+//            }
+//        }
     }
 
     
