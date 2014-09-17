@@ -82,14 +82,14 @@
     <Compile Include="Model\World.cs" />
     <Compile Include="CurrentExtensions.cs" />
     <Compile Include="WorldExtensions.cs" />
-    <Compile Include="Behaviours\DefenseBehaviour.cs" />
-    <Compile Include="Behaviours\HockeyistBehaviour.cs" />
-    <Compile Include="Behaviours\HunterBehaviour.cs" />
     <Compile Include="HockeyistExtensions.cs" />
     <Compile Include="MathUtil.cs" />
     <Compile Include="Point.cs" />
-    <Compile Include="Behaviours\GetThePuckBehaviour.cs" />
     <Compile Include="UnitExtensions.cs" />
+    <Compile Include="DefenseBehaviour.cs" />
+    <Compile Include="GetThePuckBehaviour.cs" />
+    <Compile Include="HockeyistBehaviour.cs" />
+    <Compile Include="HunterBehaviour.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
@@ -121,7 +121,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <Folder Include="Behaviours\" />
-  </ItemGroup>
 </Project>
