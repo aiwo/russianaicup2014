@@ -7,52 +7,16 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 {
 	public class HunterBehaviour : HockeyistBehaviour
 	{
+		GetThePuckBehaviour getThePuck;
 		const Double attackLine = 400;
 		public HunterBehaviour (Hockeyist h) : base(h)
 		{
+			getThePuck = new GetThePuckBehaviour (h);
 			strikePoints = new[]
 			{
 				new Point(attackLine, 650),
 				new Point(attackLine, 250)
 			};
-		}
-
-		private IEnumerable<Action<Move>> GoGetThePuck()
-		{
-			double distance = me.GetDistanceTo(world.Puck);
-
-			var puck = world.Puck;
-
-			double angleToPuck = me.GetAngleTo(puck);
-			angleToPuck -= Math.Abs(angleToPuck) > Math.PI/2 ? Math.Sign(angleToPuck)*Math.PI/2 : 0;
-
-			double x = puck.X + puck.SpeedX * Math.Abs(Math.Sin(angleToPuck) * me.SpeedX);
-			double y = puck.Y + puck.SpeedY * Math.Abs(Math.Sin(angleToPuck) * me.SpeedY);
-
-			double angle = me.GetAngleTo(x, y);
-
-			//Console.WriteLine(angleToPuck - angle);
-
-			yield return move => {
-				move.Turn = angle;
-				move.SpeedUp = 1.0D;
-
-				move.Action = ActionType.TakePuck;
-			};
-//			return;
-//
-//			if (_world.Tick % 2 == 0)
-//			{
-//				Hockeyist nearestOpponent = NearestOpponent(_self.X, _self.Y, _world);
-//				if (nearestOpponent != null)
-//				{
-//					if (_self.GetDistanceTo(nearestOpponent) <= _game.StickLength
-//						&& Math.Abs(_self.GetAngleTo(nearestOpponent)) < 0.5D * _game.StickSector)
-//					{
-//						_move.Action = ActionType.Strike;
-//					}
-//				}
-//			}
 		}
 
 		private bool StrikePositionTaken()
@@ -141,13 +105,9 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 					};
 					continue;
 				}
-
-				if (world.Puck.OwnerHockeyistId != me.Id)
-				{
-					foreach (var action in GoGetThePuck()) {
-						yield return action;
-					}
-					continue;
+					
+				foreach (var action in getThePuck.Perform()) {
+					yield return action;
 				}
 
 				if (!StrikePositionTaken() || TooClose())

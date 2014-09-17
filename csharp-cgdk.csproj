@@ -88,6 +88,8 @@
     <Compile Include="HockeyistExtensions.cs" />
     <Compile Include="MathUtil.cs" />
     <Compile Include="Point.cs" />
+    <Compile Include="Behaviours\GetThePuckBehaviour.cs" />
+    <Compile Include="UnitExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
