@@ -1,31 +1,18 @@
 ﻿using System;
+using Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk.Model;
 
 namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 {
-	public class Point
+	public class Point : Unit
 	{
-		private const double MaxX = 1200;
-		private const double MaxY = 800;
-
-		private double _x;
-		private double _y;
-
-		public bool Passed = false;
-
-		public double X
+		public Point(double x, double y) : base(0, 0, 0, x, y, 0, 0, 0, 0)
 		{
-			get { return _x; }
+
 		}
 
-		public double Y
+		public Point() : this(0, 0)
 		{
-			get { return _y; }
-		}
 
-		public Point(double x, double y)
-		{
-			_x = Math.Min(x, MaxX);
-			_y = Math.Min(y, MaxY);
 		}
 	}
 }

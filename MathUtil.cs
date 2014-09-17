@@ -18,6 +18,11 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 			}
 			return reverseAngle;
 		}
+
+		public static double Hypot(double x, double y)
+		{
+			return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+		}
 	}
 }
 

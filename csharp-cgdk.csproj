@@ -91,6 +91,7 @@
     <Compile Include="HockeyistBehaviour.cs" />
     <Compile Include="HunterBehaviour.cs" />
     <Compile Include="PassThePuckBehaviour.cs" />
+    <Compile Include="ReachAndSlowdownBehaviour.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

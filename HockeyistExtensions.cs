@@ -36,7 +36,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 					continue;
 				}
 
-				double opponentRange = Hypot(me.X - hockeyist.X, me.Y - hockeyist.Y);
+				double opponentRange = MathUtil.Hypot(me.X - hockeyist.X, me.Y - hockeyist.Y);
 
 				if (nearestOpponent == null || opponentRange < nearestOpponentRange)
 				{
@@ -46,11 +46,6 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 			}
 
 			return nearestOpponent;
-		}
-
-		private static double Hypot(double x, double y)
-		{
-			return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 		}
 
 		public static bool OwnsThePuck(this Hockeyist me)
