@@ -13,6 +13,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 		}
 		long hId;
 
+		public Game game { get { return Get<Game>.Current (); } }
 		public World world { get { return Get<World>.Current (); } }
 		public Hockeyist me { get { return world.Hockeyists.First (x => x.Id == hId); }  }
 

@@ -52,6 +52,12 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 		{
 			return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 		}
+
+		public static bool OwnsThePuck(this Hockeyist me)
+		{
+			var w = Get<World>.Current ();
+			return w.Puck.OwnerHockeyistId == me.Id;
+		}
 	}
 }
 

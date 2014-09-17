@@ -12,7 +12,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 
 		public override IEnumerable<Action<Move>> Perform ()
 		{
-			while (world.Puck.OwnerHockeyistId != me.Id) {
+			while (!me.OwnsThePuck()) {
 				yield return move => {
 					move.Turn = me.GetAdjustedAngleTo(world.Puck);
 					move.SpeedUp = 1.0D;
