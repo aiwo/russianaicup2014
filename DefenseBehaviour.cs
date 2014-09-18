@@ -25,6 +25,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 					}
 					continue;
 				}
+					
 				if (me.GetDistanceTo (world.Puck) < 120) {
 					yield return move => {
 						move.Turn = me.GetAngleTo (world.Puck);
@@ -33,11 +34,17 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 					continue;
 				}
 
+				if (me.GetDistanceTo(world.MyNetDefensePoint()) > 60) {
+					yield return move => {
+						var point = world.MyNetDefensePoint ();
+						double angle = me.GetAngleTo (point.X, point.Y);
+						move.SpeedUp = -1.0D + MathUtil.ReverseAngle (angle);
+						move.Turn = MathUtil.ReverseAngle (angle);
+					};	
+				}
+
 				yield return move => {
-					var point = world.MyNetDefensePoint ();
-					double angle = me.GetAngleTo (point.X, point.Y);
-					move.SpeedUp = -1.0D + MathUtil.ReverseAngle (angle);
-					move.Turn = MathUtil.ReverseAngle (angle);
+					move.Turn = me.GetAdjustedAngleTo(world.Puck);
 				};
 			}
 		}

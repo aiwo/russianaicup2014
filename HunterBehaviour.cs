@@ -74,8 +74,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 		{
 			return me.X < decelerateLine;
 		}
-
-		private const double StrikeAngle = 1.0D * Math.PI/180.0D;
+			
 		public override IEnumerable<Action<Move>> Perform ()
 		{
 			while (true) {
@@ -91,23 +90,24 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 					yield return action;
 				}
 
-				if (!reach) {
+				if (reach == null) {
 					reach = new ReachAndSlowdownBehaviour (me, PickClosestStrikePoint ());
 					foreach (var action in reach.Perform()) {
 						yield return action;
 					}
 				}
+					
+				while (Math.Abs (me.GetAngleTo (world.NetStrikePoint ())) > (game.StrikeAngleDeviation)) {
+					yield return move => {
+						move.Turn = me.GetAngleTo (world.NetStrikePoint ());
+					};
+				}
 
-				var point = world.NetStrikePoint();
-				double angleToNet = me.GetAngleTo(point.X, point.Y);
 				yield return move => {
-					move.Turn = angleToNet;
-
-					if (Math.Abs(angleToNet) < StrikeAngle)
-					{
-						move.Action = ActionType.Strike;
-					}
+					move.Action = ActionType.Strike;
 				};
+
+				reach = null;
 			}
 		}
 	}

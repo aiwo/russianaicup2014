@@ -17,7 +17,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 			
 		public override IEnumerable<Action<Move>> Perform ()
 		{
-			while (Math.Abs (me.Angle - me.GetAdjustedAngleTo(teammate)) > (game.PassSector / 2)) {
+			while (Math.Abs (me.GetAdjustedAngleTo(teammate)) > (game.PassSector / 2)) {
 				yield return move => {
 					move.Turn = me.GetAdjustedAngleTo(teammate);
 				};
