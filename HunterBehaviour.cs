@@ -91,7 +91,7 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 				}
 
 				if (reach == null) {
-					reach = new ReachAndSlowdownBehaviour (me, PickClosestStrikePoint ());
+					reach = new ReachAndSlowdownBehaviour (me, PickClosestStrikePoint (), false);
 					foreach (var action in reach.Perform()) {
 						yield return action;
 					}

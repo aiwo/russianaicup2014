@@ -62,12 +62,12 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 
 		public static Hockeyist MyGoalie(this World world)
 		{
-			return world.Hockeyists.First (x => x.Type == HockeyistType.Goalie && x.IsTeammate);
+            return world.Hockeyists.FirstOrDefault (x => x.Type == HockeyistType.Goalie && x.IsTeammate); //TODO:
 		}
 
 		public static Hockeyist EnemyGoalie(this World world)
 		{
-			return world.Hockeyists.First (x => x.Type == HockeyistType.Goalie && !x.IsTeammate);
+            return world.Hockeyists.FirstOrDefault(x => x.Type == HockeyistType.Goalie && !x.IsTeammate); //TODO:
 		}
 	}
 }

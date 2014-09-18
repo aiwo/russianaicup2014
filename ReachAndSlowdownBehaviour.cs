@@ -7,9 +7,11 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 	public class ReachAndSlowdownBehaviour : HockeyistBehaviour
 	{
 		Unit target;
-		public ReachAndSlowdownBehaviour (Hockeyist me, Unit target) : base(me)
+	    bool backwardsMovement;
+		public ReachAndSlowdownBehaviour (Hockeyist me, Unit target, bool backwardsMovement) : base(me)
 		{
 			this.target = target;
+		    this.backwardsMovement = backwardsMovement;
 		}
 
 		public override IEnumerable<Action<Move>> Perform ()
@@ -27,14 +29,14 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 				if (distance < distanceToPerformFullStop)
 				{
 					yield return move => {
-						move.SpeedUp = -1;
-						move.Turn = me.GetAdjustedAngleTo(target);
+						move.SpeedUp = backwardsMovement ? -1 : 1;
+                        move.Turn = backwardsMovement ?  me.GetAdjustedBackwardsAngleTo(target) : me.GetAdjustedAngleTo(target);
 					};
 					continue;
 				}
-				yield return move => { //full sail ahead, matey!
-					move.SpeedUp = 1; 
-					move.Turn = me.GetAdjustedAngleTo(target);
+				yield return move => { //full sail backwards, matey!
+                    move.SpeedUp = backwardsMovement ? -1 : 1;
+                    move.Turn = backwardsMovement ? me.GetAdjustedBackwardsAngleTo(target) : me.GetAdjustedAngleTo(target);
 				};
 
 			} while (distance > 60);

@@ -8,3 +8,8 @@ D:\russianaicup2014\aiwo\obj\Debug\csharp-cgdk.pdb
 D:\russianaicup2014\aiwo\bin\Debug\csharp-cgdk.exe
 D:\russianaicup2014\aiwo\bin\Debug\csharp-cgdk.pdb
 D:\russianaicup2014\aiwo\obj\Debug\csharp-cgdk.csprojResolveAssemblyReference.cache
+D:\russianaicup2014\obj\Debug\csharp-cgdk.exe
+D:\russianaicup2014\obj\Debug\csharp-cgdk.pdb
+D:\russianaicup2014\bin\Debug\csharp-cgdk.exe
+D:\russianaicup2014\bin\Debug\csharp-cgdk.pdb
+D:\russianaicup2014\obj\Debug\csharp-cgdk.csprojResolveAssemblyReference.cache

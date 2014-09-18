@@ -14,13 +14,32 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 		}
 
 
-		double defenseLine { get { return world.GetMyPlayer ().NetLeft - 30; } }
+	    private double defenseLine
+	    {
+	        get
+	        {
+	            bool myFieldSideIsOnTheRight = world.GetMyPlayer().NetLeft < world.GetMyPlayer().NetRight;
+	            const double defenseDistanceFromNet = 60;
+                return myFieldSideIsOnTheRight ? world.GetMyPlayer().NetLeft - defenseDistanceFromNet : world.GetMyPlayer().NetRight + defenseDistanceFromNet;
+	        }
+	    }
 
-		Point myNetDefensePoint { 
-			get { 
-				var topSpace = world.MyGoalie ().Y - world.GetMyPlayer ().NetTop;
-				var bottomSpace = world.GetMyPlayer ().NetBottom - world.MyGoalie ().Y;
-				var holdTop = topSpace > bottomSpace;
+	    Point myNetDefensePoint { 
+			get
+			{
+			    bool holdTop = false;
+			    double topSpace;
+                double bottomSpace;
+			    if (world.MyGoalie() != null)
+			    {
+                    topSpace = world.MyGoalie().Y - world.GetMyPlayer().NetTop;
+                    bottomSpace = world.GetMyPlayer().NetBottom - world.MyGoalie().Y;
+                    holdTop = topSpace > bottomSpace;         
+			    }
+			    else
+			    {
+			        topSpace = bottomSpace = (world.GetMyPlayer().NetTop - world.GetMyPlayer().NetBottom) / 2;
+			    }
 					
 				if (holdTop)
 					return new Point (defenseLine, world.GetMyPlayer().NetTop + (topSpace / 2));
@@ -31,12 +50,15 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 
 		Point turnOverPoint {
 			get {
-				return new Point (defenseLine - 60, (world.GetMyPlayer ().NetTop + world.GetMyPlayer ().NetBottom) / 2);
+				return new Point (defenseLine - 60 * Math.Sign(world.GetMyPlayer().NetFront - world.GetOpponentPlayer().NetFront), (world.GetMyPlayer ().NetTop + world.GetMyPlayer ().NetBottom) / 2);
 			}
 		}
 
 		bool goalieBetweenMeAndDefensePoint {
-			get {
+			get
+			{
+			    if (world.MyGoalie() == null)
+			        return false;
 				var point = myNetDefensePoint;
 				var goalieY = world.MyGoalie ().Y;
 				return (me.Y < goalieY && goalieY < point.Y) || (me.Y > goalieY && goalieY > point.Y);
@@ -81,17 +103,18 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 
 				if (!meNearDefensePoint) {
 					if (goalieBetweenMeAndDefensePoint) {
-						foreach (var action in new ReachAndSlowdownBehaviour(me, turnOverPoint).Perform()) {
+						foreach (var action in new ReachAndSlowdownBehaviour(me, turnOverPoint, true).Perform()) {
 							yield return action;
 						} 
 					}
 
-					foreach (var action in new ReachAndSlowdownBehaviour(me, myNetDefensePoint).Perform()) {
+					foreach (var action in new ReachAndSlowdownBehaviour(me, myNetDefensePoint, true).Perform()) {
 						yield return action;
 					} 
 				}
 
 				yield return move => {
+                    move.Action = ActionType.TakePuck;
 					move.Turn = me.GetAdjustedAngleTo(world.Puck);
 				};
 			}
