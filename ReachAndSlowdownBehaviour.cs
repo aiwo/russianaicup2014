@@ -19,6 +19,11 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 				distance = me.GetDistanceTo (target);
 				var distanceToPerformFullStop = MathUtil.Hypot (me.SpeedX, me.SpeedY) / game.HockeyistSpeedDownFactor;
 
+				while (me.GetAdjustedAngleTo(target) > Math.PI)
+					yield return move => {
+						move.Turn = me.GetAdjustedAngleTo(target);
+					};
+
 				if (distance < distanceToPerformFullStop)
 				{
 					yield return move => {

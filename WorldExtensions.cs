@@ -59,6 +59,16 @@ namespace Com.CodeGame.CodeHockey2014.DevKit.CSharpCgdk
 
 			return new Point(netX, strikeY);
 		}
+
+		public static Hockeyist MyGoalie(this World world)
+		{
+			return world.Hockeyists.First (x => x.Type == HockeyistType.Goalie && x.IsTeammate);
+		}
+
+		public static Hockeyist EnemyGoalie(this World world)
+		{
+			return world.Hockeyists.First (x => x.Type == HockeyistType.Goalie && !x.IsTeammate);
+		}
 	}
 }
 
